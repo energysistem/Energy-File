@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EnergyFileExplorer.iml" filepath="$PROJECT_DIR$/EnergyFileExplorer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fileexplorer/fileexplorer.iml" filepath="$PROJECT_DIR$/fileexplorer/fileexplorer.iml" />
+    </modules>
+  </component>
+</project>
+
