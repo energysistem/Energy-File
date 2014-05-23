@@ -23,12 +23,16 @@ public class Explorer {
 
     public static ArrayList<MainItem> showArchives(File sd){
         ArrayList<MainItem> result = new ArrayList<MainItem>();
-        for(File aux : sd.listFiles()){
-            if(!aux.isHidden())
-                if(aux.isDirectory())
-                    result.add(new MainItem(R.drawable.file_explorer, aux.getName(),"Número de Archivos: " + aux.listFiles().length, aux));
-                else
-                    result.add(new MainItem(R.drawable.music, aux.getName(),"", aux));
+        File[] dirsList = sd.listFiles();
+        if(dirsList != null) {
+            for (File aux : dirsList)
+                if (!aux.isHidden())
+                    if (aux.isDirectory())
+                        result.add(new MainItem(R.drawable.file_explorer, aux.getName(), "Archivos: " + aux.listFiles().length, aux));
+                    else
+                        result.add(new MainItem(R.drawable.music, aux.getName(), "", aux));
+        } else {
+            result.add(new MainItem(R.drawable.file_explorer, sd.getName(), sd.getAbsolutePath(), sd));
         }
         return result;
     }

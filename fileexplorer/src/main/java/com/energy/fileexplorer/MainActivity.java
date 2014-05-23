@@ -1,10 +1,12 @@
 package com.energy.fileexplorer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -34,7 +36,8 @@ import com.energy.fileexplorer.List.Item.MenuItem;
 public class MainActivity extends ActionBarActivity {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
-    ViewPager mViewPager;
+    public ViewPager mViewPager;
+    public static ArrayList<File> mainviews;
 
     /**
      * Navigation Drawer
@@ -51,6 +54,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mainviews = new ArrayList<File>();
+        mainviews.add(Environment.getExternalStorageDirectory());
 
 
 
@@ -153,10 +158,8 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle.syncState();
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
+
+    /**  ----------------------------------------------------------------------------------------------------   */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -167,13 +170,13 @@ public class MainActivity extends ActionBarActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return mainviews.size();
         }
 
         @Override
@@ -191,6 +194,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    /**  ----------------------------------------------------------------------------------------------------   */
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -211,26 +215,19 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            //textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             int num = getArguments().getInt(ARG_SECTION_NUMBER);
 
             //This list is from http://www.vogella.com/tutorials/AndroidListView/article.html#androidlists
             ListView listview = (ListView) rootView.findViewById(R.id.listView);
-            mainItems = new ArrayList<MainItem>();
-            MainItem[] list = new MainItem[5];
+            mainItems = Explorer.showArchives(mainviews.get(num));
 
-            switch (num) {
+
+            /*switch (num) {
                 case 1:
                     mainItems = Explorer.showArchives();
 
-                    /*mainItems.add(new MainItem(R.drawable.file_explorer, "Alarms","Contents 3 items"));
-                    mainItems.add(new MainItem(R.drawable.file_explorer, "Android","Contents 3 items"));
-                    mainItems.add(new MainItem(R.drawable.file_explorer, "Download","Contents 3 items"));
-                    mainItems.add(new MainItem(R.drawable.file_explorer, "Movies","Contents 3 items"));
-                    mainItems.add(new MainItem(R.drawable.gallery, "DMC0122212","Image file"));*/
                     break;
                 case 2:
                     mainItems.add(new MainItem(R.drawable.music, "Purple Haze","Jimi Jendrix - Are you Expirienced?",null));
@@ -252,29 +249,35 @@ public class MainActivity extends ActionBarActivity {
                     mainItems.add(new MainItem(R.drawable.file_explorer, "Download","Contents 3 items",null));
                     mainItems.add(new MainItem(R.drawable.file_explorer, "Movies","Contents 3 items",null));
                     mainItems.add(new MainItem(R.drawable.gallery, "DMC0122212","Image file",null));
-            }
+            }*/
 
 
 
             MainAdapter adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, mainItems);
             listview.setAdapter(adapter);
             listview.setOnItemClickListener(this);
-            //mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
             return rootView;
         }
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             MainItem item = mainItems.get(position);
+            if(item.file.isDirectory()){
+                mainviews.add(item.file);
+                PlaceholderFragment.newInstance(getArguments().getInt(ARG_SECTION_NUMBER));
+                //getArguments().getInt(ARG_SECTION_NUMBER)
+            }
 
         }
     }
 
+
+    /**  ----------------------------------------------------------------------------------------------------   */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
+            //selectItem(position);
         }
 
 
