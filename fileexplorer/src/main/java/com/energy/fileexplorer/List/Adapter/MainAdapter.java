@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.energy.fileexplorer.List.Item.MainItem;
 import com.energy.fileexplorer.R;
 
+import java.util.List;
+
 
 /**  ListAdapter
  * Created by sitron on 10/04/14.
@@ -21,9 +23,9 @@ public class MainAdapter extends ArrayAdapter<MainItem> {
 
     Context mContext;
     int layoutResourceId;
-    MainItem data[] = null;
+    List<MainItem> data = null;
 
-    public MainAdapter(Context mContext, int layoutResourceId, MainItem[] data) {
+    public MainAdapter(Context mContext, int layoutResourceId, List<MainItem> data) {
 
         super(mContext, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
@@ -33,24 +35,21 @@ public class MainAdapter extends ArrayAdapter<MainItem> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        View listItem = convertView;
-
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-        listItem = inflater.inflate(layoutResourceId, parent, false);
+        convertView = inflater.inflate(layoutResourceId, parent, false);
 
-        ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.listImage);
-        TextView textViewName = (TextView) listItem.findViewById(R.id.listText);
-        TextView subtextViewName = (TextView) listItem.findViewById(R.id.listSubText);
+        ImageView imageViewIcon = (ImageView) convertView.findViewById(R.id.listImage);
+        TextView textViewName = (TextView) convertView.findViewById(R.id.listText);
+        TextView subtextViewName = (TextView) convertView.findViewById(R.id.listSubText);
 
-        MainItem folder = data[position];
+        MainItem folder = data.get(position);
 
 
         imageViewIcon.setImageResource(folder.icon);
         textViewName.setText(folder.text);
         subtextViewName.setText(folder.subText);
 
-        return listItem;
+        return convertView;
     }
 
 }

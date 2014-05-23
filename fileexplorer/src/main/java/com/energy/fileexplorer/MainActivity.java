@@ -1,7 +1,8 @@
 package com.energy.fileexplorer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -32,19 +33,7 @@ import com.energy.fileexplorer.List.Item.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     ViewPager mViewPager;
 
     /**
@@ -77,16 +66,16 @@ public class MainActivity extends ActionBarActivity {
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        MenuItem[] drawerItem = new MenuItem[5];
+        MenuItem[] menuItems = new MenuItem[5];
 
-        drawerItem[0] = new MenuItem(R.drawable.file_explorer, "Home");
-        drawerItem[1] = new MenuItem(R.drawable.music, "Music");
-        drawerItem[2] = new MenuItem(R.drawable.video_player, "Video");
-        drawerItem[3] = new MenuItem(R.drawable.gallery, "Gallery");
-        drawerItem[4] = new MenuItem(R.drawable.ereader, "Ebook");
+        menuItems[0] = new MenuItem(R.drawable.file_explorer, "Home");
+        menuItems[1] = new MenuItem(R.drawable.music, "Music");
+        menuItems[2] = new MenuItem(R.drawable.video_player, "Video");
+        menuItems[3] = new MenuItem(R.drawable.gallery, "Gallery");
+        menuItems[4] = new MenuItem(R.drawable.ereader, "Ebook");
 
 
-        MenuAdapter adapter = new MenuAdapter(this, R.layout.listview_item_row, drawerItem);
+        MenuAdapter adapter = new MenuAdapter(this, R.layout.listview_item_row, menuItems);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -164,7 +153,6 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle.syncState();
     }
 
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -206,17 +194,10 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+    public static class PlaceholderFragment extends Fragment implements AdapterView.OnItemClickListener {
+        List<MainItem> mainItems = new ArrayList<MainItem>();
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -238,46 +219,54 @@ public class MainActivity extends ActionBarActivity {
 
             //This list is from http://www.vogella.com/tutorials/AndroidListView/article.html#androidlists
             ListView listview = (ListView) rootView.findViewById(R.id.listView);
+            mainItems = new ArrayList<MainItem>();
             MainItem[] list = new MainItem[5];
 
             switch (num) {
                 case 1:
-                    list = Explorer.showArchives();
-                /*
-                    list[0] = new MainItem(R.drawable.file_explorer, "Alarms","Contents 3 items");
-                    list[1] = new MainItem(R.drawable.file_explorer, "Android","Contents 3 items");
-                    list[2] = new MainItem(R.drawable.file_explorer, "Download","Contents 3 items");
-                    list[3] = new MainItem(R.drawable.file_explorer, "Movies","Contents 3 items");
-                    list[4] = new MainItem(R.drawable.gallery, "DMC0122212","Image file");*/
+                    mainItems = Explorer.showArchives();
+
+                    /*mainItems.add(new MainItem(R.drawable.file_explorer, "Alarms","Contents 3 items"));
+                    mainItems.add(new MainItem(R.drawable.file_explorer, "Android","Contents 3 items"));
+                    mainItems.add(new MainItem(R.drawable.file_explorer, "Download","Contents 3 items"));
+                    mainItems.add(new MainItem(R.drawable.file_explorer, "Movies","Contents 3 items"));
+                    mainItems.add(new MainItem(R.drawable.gallery, "DMC0122212","Image file"));*/
                     break;
                 case 2:
-                    list[0] = new MainItem(R.drawable.music, "Purple Haze","Jimi Jendrix - Are you Expirienced?");
-                    list[1] = new MainItem(R.drawable.music, "More Than A Feeling","Boston - Boston");
-                    list[2] = new MainItem(R.drawable.music, "Butterfly bleu","Iron Butterfly - Metamorphosis");
-                    list[3] = new MainItem(R.drawable.music, "Fortune Son","Creedence Clearwater Revival - Willy and the Poor Boys");
-                    list[4] = new MainItem(R.drawable.music, "The End","The Door - The Doors");
+                    mainItems.add(new MainItem(R.drawable.music, "Purple Haze","Jimi Jendrix - Are you Expirienced?",null));
+                    mainItems.add(new MainItem(R.drawable.music, "More Than A Feeling","Boston - Boston",null));
+                    mainItems.add(new MainItem(R.drawable.music, "Butterfly bleu","Iron Butterfly - Metamorphosis",null));
+                    mainItems.add(new MainItem(R.drawable.music, "Fortune Son","Creedence Clearwater Revival - Willy and the Poor Boys",null));
+                    mainItems.add(new MainItem(R.drawable.music, "The End","The Door - The Doors",null));
                     break;
                 case 3:
-                    list[0] = new MainItem(R.drawable.video_player, "Gone with the Wind","Video file");
-                    list[1] = new MainItem(R.drawable.video_player, "Casablanca","Video file");
-                    list[2] = new MainItem(R.drawable.video_player, "Seven Samurai","Video file");
-                    list[3] = new MainItem(R.drawable.video_player, "The Godfather","Video file");
-                    list[4] = new MainItem(R.drawable.video_player, "The Lord of the Rings","Video file");
+                    mainItems.add(new MainItem(R.drawable.video_player, "Gone with the Wind","Video file",null));
+                    mainItems.add(new MainItem(R.drawable.video_player, "Casablanca","Video file",null));
+                    mainItems.add(new MainItem(R.drawable.video_player, "Seven Samurai","Video file",null));
+                    mainItems.add(new MainItem(R.drawable.video_player, "The Godfather","Video file",null));
+                    mainItems.add(new MainItem(R.drawable.video_player, "The Lord of the Rings","Video file",null));
                     break;
                 default:
-                    list[0] = new MainItem(R.drawable.file_explorer, "Alarms","Contents 3 items");
-                    list[1] = new MainItem(R.drawable.file_explorer, "Android","Contents 3 items");
-                    list[2] = new MainItem(R.drawable.file_explorer, "Download","Contents 3 items");
-                    list[3] = new MainItem(R.drawable.file_explorer, "Movies","Contents 3 items");
-                    list[4] = new MainItem(R.drawable.gallery, "DMC0122212","Image file");
+                    mainItems.add(new MainItem(R.drawable.file_explorer, "Alarms","Contents 3 items",null));
+                    mainItems.add(new MainItem(R.drawable.file_explorer, "Android","Contents 3 items",null));
+                    mainItems.add(new MainItem(R.drawable.file_explorer, "Download","Contents 3 items",null));
+                    mainItems.add(new MainItem(R.drawable.file_explorer, "Movies","Contents 3 items",null));
+                    mainItems.add(new MainItem(R.drawable.gallery, "DMC0122212","Image file",null));
             }
 
 
 
-            MainAdapter adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, list);
+            MainAdapter adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, mainItems);
             listview.setAdapter(adapter);
+            listview.setOnItemClickListener(this);
             //mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
             return rootView;
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            MainItem item = mainItems.get(position);
+
         }
     }
 
