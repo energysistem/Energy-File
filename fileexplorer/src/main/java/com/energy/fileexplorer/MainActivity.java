@@ -3,41 +3,31 @@ package com.energy.fileexplorer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.energy.fileexplorer.File.Explorer;
-import com.energy.fileexplorer.Fragment.CreateFragment;
-import com.energy.fileexplorer.Fragment.HelpFragment;
-import com.energy.fileexplorer.Fragment.ReadFragment;
-import com.energy.fileexplorer.List.Adapter.MainAdapter;
+import com.energy.fileexplorer.Fragment.DefaultFragment;
+import com.energy.fileexplorer.List.Adapter.FragmentAdapter;
 import com.energy.fileexplorer.List.Adapter.MenuAdapter;
 import com.energy.fileexplorer.List.Item.MainItem;
 import com.energy.fileexplorer.List.Item.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
-
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    public ViewPager mViewPager;
-    public static ArrayList<File> mainviews;
 
     /**
      * Navigation Drawer
@@ -50,24 +40,30 @@ public class MainActivity extends ActionBarActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
+    private static  List<Fragment> listaFragments;
+    private static  FragmentAdapter fragmentAdapter;
+    private static ArrayList<File> mainViews;
+    private static ViewPager mViewPager;
+    private static MainActivity aux;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mainviews = new ArrayList<File>();
-        mainviews.add(Environment.getExternalStorageDirectory());
+        /** Slide Navegation */
+        mainViews = new ArrayList<File>();
+        mainViews.add(Environment.getExternalStorageDirectory());
 
+        aux = this;
 
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
+        listaFragments = new ArrayList<Fragment>();
+        listaFragments.add(new DefaultFragment(0));
+        fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), listaFragments);
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(fragmentAdapter);
 
-        //Navigation Drawer
+
+        /** Navigation Drawer */
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -158,117 +154,25 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle.syncState();
     }
 
-
-    /**  ----------------------------------------------------------------------------------------------------   */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
+    public static void addFragmentMain(File newFile, int pos){
+        while(mainViews.size() > pos){
+            mainViews.remove(pos);
+            listaFragments.remove(pos);
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return mainviews.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
-        }
+        mainViews.add(newFile);
+        listaFragments.add(new DefaultFragment(pos));
+        //getSupportFragmentManager().getFragments().clear();
+        fragmentAdapter.notifyDataSetChanged();
+        mViewPager.setCurrentItem(pos);
     }
 
-    /**  ----------------------------------------------------------------------------------------------------   */
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment implements AdapterView.OnItemClickListener {
-        List<MainItem> mainItems = new ArrayList<MainItem>();
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    public static File getFile(int pos){
+        return mainViews.get(pos);
+    }
 
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            int num = getArguments().getInt(ARG_SECTION_NUMBER);
-
-            //This list is from http://www.vogella.com/tutorials/AndroidListView/article.html#androidlists
-            ListView listview = (ListView) rootView.findViewById(R.id.listView);
-            mainItems = Explorer.showArchives(mainviews.get(num));
-
-
-            /*switch (num) {
-                case 1:
-                    mainItems = Explorer.showArchives();
-
-                    break;
-                case 2:
-                    mainItems.add(new MainItem(R.drawable.music, "Purple Haze","Jimi Jendrix - Are you Expirienced?",null));
-                    mainItems.add(new MainItem(R.drawable.music, "More Than A Feeling","Boston - Boston",null));
-                    mainItems.add(new MainItem(R.drawable.music, "Butterfly bleu","Iron Butterfly - Metamorphosis",null));
-                    mainItems.add(new MainItem(R.drawable.music, "Fortune Son","Creedence Clearwater Revival - Willy and the Poor Boys",null));
-                    mainItems.add(new MainItem(R.drawable.music, "The End","The Door - The Doors",null));
-                    break;
-                case 3:
-                    mainItems.add(new MainItem(R.drawable.video_player, "Gone with the Wind","Video file",null));
-                    mainItems.add(new MainItem(R.drawable.video_player, "Casablanca","Video file",null));
-                    mainItems.add(new MainItem(R.drawable.video_player, "Seven Samurai","Video file",null));
-                    mainItems.add(new MainItem(R.drawable.video_player, "The Godfather","Video file",null));
-                    mainItems.add(new MainItem(R.drawable.video_player, "The Lord of the Rings","Video file",null));
-                    break;
-                default:
-                    mainItems.add(new MainItem(R.drawable.file_explorer, "Alarms","Contents 3 items",null));
-                    mainItems.add(new MainItem(R.drawable.file_explorer, "Android","Contents 3 items",null));
-                    mainItems.add(new MainItem(R.drawable.file_explorer, "Download","Contents 3 items",null));
-                    mainItems.add(new MainItem(R.drawable.file_explorer, "Movies","Contents 3 items",null));
-                    mainItems.add(new MainItem(R.drawable.gallery, "DMC0122212","Image file",null));
-            }*/
-
-
-
-            MainAdapter adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, mainItems);
-            listview.setAdapter(adapter);
-            listview.setOnItemClickListener(this);
-            return rootView;
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            MainItem item = mainItems.get(position);
-            if(item.file.isDirectory()){
-                mainviews.add(item.file);
-                PlaceholderFragment.newInstance(getArguments().getInt(ARG_SECTION_NUMBER));
-                //getArguments().getInt(ARG_SECTION_NUMBER)
-            }
-
-        }
+    public static List<Fragment> getFragments(){
+        return listaFragments;
     }
 
 
@@ -288,17 +192,23 @@ public class MainActivity extends ActionBarActivity {
 
             switch (position) {
                 case 0:
-                    fragment = new CreateFragment();
+                    mViewPager.setCurrentItem(0);
+                    while(mainViews.size() > 1){
+                    mainViews.remove(1);
+                    listaFragments.remove(1);
+                }
+                    fragmentAdapter.notifyDataSetChanged();
+                    mViewPager.setCurrentItem(0);
                     break;
                 case 1:
-                    fragment = new ReadFragment();
+                    //fragment = new ReadFragment();
                     break;
                 case 2:
-                    fragment = new HelpFragment();
+                    //fragment = new HelpFragment();
                     break;
 
                 default:
-                    fragment = new HelpFragment();
+                    //fragment = new HelpFragment();
                     break;
             }
 
