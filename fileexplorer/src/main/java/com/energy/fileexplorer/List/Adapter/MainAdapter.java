@@ -45,7 +45,7 @@ public class MainAdapter extends ArrayAdapter<MainItem> {
         MainItem folder = data.get(position);
 
 
-        imageViewIcon.setImageResource(folder.icon);
+        imageViewIcon.setImageDrawable(folder.icon);
         textViewName.setText(folder.text);
         subtextViewName.setText(folder.subText);
 

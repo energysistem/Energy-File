@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -15,11 +16,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.energy.fileexplorer.File.Explorer;
 import com.energy.fileexplorer.Fragment.DefaultFragment;
 import com.energy.fileexplorer.List.Adapter.FragmentAdapter;
 import com.energy.fileexplorer.List.Adapter.MenuAdapter;
@@ -44,7 +47,6 @@ public class MainActivity extends ActionBarActivity {
     private static  FragmentAdapter fragmentAdapter;
     private static ArrayList<File> mainViews;
     private static ViewPager mViewPager;
-    private static MainActivity aux;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         mainViews = new ArrayList<File>();
         mainViews.add(Environment.getExternalStorageDirectory());
 
-        aux = this;
+        Explorer.context = this;
 
         listaFragments = new ArrayList<Fragment>();
         listaFragments.add(new DefaultFragment(0));
@@ -171,17 +173,13 @@ public class MainActivity extends ActionBarActivity {
         return mainViews.get(pos);
     }
 
-    public static List<Fragment> getFragments(){
-        return listaFragments;
-    }
-
 
     /**  ----------------------------------------------------------------------------------------------------   */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //selectItem(position);
+            selectItem(position);
         }
 
 
@@ -189,14 +187,16 @@ public class MainActivity extends ActionBarActivity {
         private void selectItem(int position) {
 
             android.app.Fragment fragment = null;
+            mDrawerLayout.setSelected(false);
 
             switch (position) {
                 case 0:
                     mViewPager.setCurrentItem(0);
                     while(mainViews.size() > 1){
-                    mainViews.remove(1);
-                    listaFragments.remove(1);
-                }
+                        mainViews.remove(1);
+                        listaFragments.remove(1);
+                    }
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
                     fragmentAdapter.notifyDataSetChanged();
                     mViewPager.setCurrentItem(0);
                     break;
@@ -218,6 +218,7 @@ public class MainActivity extends ActionBarActivity {
 
                 mDrawerList.setItemChecked(position, true);
                 mDrawerList.setSelection(position);
+                mDrawerLayout.closeDrawer(0);
                 //getActionBar().setTitle(mNavigationDrawerItemTitles[position]);
                 setTitle(mNavigationDrawerItemTitles[position]);
                 mDrawerLayout.closeDrawer(mDrawerList);

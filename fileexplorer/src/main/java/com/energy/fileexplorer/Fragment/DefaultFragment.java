@@ -44,7 +44,10 @@ public class DefaultFragment extends Fragment {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MainActivity.addFragmentMain(mainItems.get(position).file, pos +1);
+                if(mainItems.get(position).file.isDirectory())
+                    MainActivity.addFragmentMain(mainItems.get(position).file, pos +1);
+                else
+                    Explorer.showArchives(mainItems.get(position).file);
             }
         });
         return rootView;
