@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mFileCopy"
+        android:title="Copiar"/>
+
+    <item
+        android:id="@+id/mFileCut"
+        android:title="Cortar"/>
+
+    <item
+        android:id="@+id/mFilePast"
+        android:title="Pegar"
+        android:enabled="false"/>
+
+    <item
+        android:id="@+id/mFileRename"
+        android:title="Renombrar"/>
+
+    <item
+        android:id="@+id/mFileNewFolder"
+        android:title="Crear carpeta"/>
+
+</menu>

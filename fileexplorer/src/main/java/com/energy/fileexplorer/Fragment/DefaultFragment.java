@@ -3,10 +3,13 @@ package com.energy.fileexplorer.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.energy.fileexplorer.File.Explorer;
 import com.energy.fileexplorer.List.Adapter.MainAdapter;
@@ -39,7 +42,7 @@ public class DefaultFragment extends Fragment {
 
         mainItems = Explorer.showArchives(file);
 
-        MainAdapter adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, mainItems);
+        final MainAdapter adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, mainItems);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -48,6 +51,43 @@ public class DefaultFragment extends Fragment {
                     MainActivity.addFragmentMain(mainItems.get(position).file, pos +1);
                 else
                     Explorer.showArchives(mainItems.get(position).file);
+            }
+        });
+
+        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                /** Instantiating PopupMenu class */
+                PopupMenu popup = new PopupMenu(view.getContext(), view);
+
+                /** Adding menu items to the popumenu */
+                popup.getMenuInflater().inflate(R.menu.file_menu, popup.getMenu());
+                if(Explorer.canPast)
+                    popup.getMenu().getItem(2).setEnabled(true);
+
+                /** Defining menu item click listener for the popup menu */
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.mFileCopy)
+                            Explorer.archiveCopy(mainItems.get(position).file);
+                        else if (item.getItemId() == R.id.mFileCut)
+                            Explorer.archiveCut(mainItems.get(position).file);
+                        else if (item.getItemId() == R.id.mFilePast) {
+                            Explorer.archivePaste(MainActivity.getFile(pos));
+                            mainItems = Explorer.showArchives(file);
+                            adapter.notifyDataSetChanged();
+                        }
+
+
+                        return true;
+                    }
+                });
+
+                /** Showing the popup menu */
+                popup.show();
+                return true;
             }
         });
         return rootView;

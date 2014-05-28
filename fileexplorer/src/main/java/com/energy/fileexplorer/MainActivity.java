@@ -47,6 +47,7 @@ public class MainActivity extends ActionBarActivity {
     private static  FragmentAdapter fragmentAdapter;
     private static ArrayList<File> mainViews;
     private static ViewPager mViewPager;
+    private boolean backButtonExit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +155,31 @@ public class MainActivity extends ActionBarActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backButtonExit)
+            super.onBackPressed();
+        else
+            backButtonExit = true;
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        backButtonExit = false;
+                    }
+                });
+            }
+        };
+        thread.run();
     }
 
     public static void addFragmentMain(File newFile, int pos){

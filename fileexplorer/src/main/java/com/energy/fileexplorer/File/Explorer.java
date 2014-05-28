@@ -8,11 +8,17 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.energy.fileexplorer.List.Item.MainItem;
+import com.energy.fileexplorer.List.Item.MenuItem;
 import com.energy.fileexplorer.R;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
@@ -20,8 +26,9 @@ import java.util.ArrayList;
  */
 public class Explorer {
     public static Context context;
-    //private static String[] types = {"File","Audio","Video","Ereader","Image","Other"};
-    //private static int[] icons = {R.drawable.file_explorer,R.drawable.music,R.drawable.video_player,R.drawable.ereader,R.drawable.gallery,R.drawable.ic_launcher};
+    public static boolean canPast = false;
+    private static boolean isCut = false;
+    private static File lastCache;
 
     public static ArrayList<MainItem> showArchives(File sd){
         ArrayList<MainItem> result = new ArrayList<MainItem>();
@@ -43,7 +50,11 @@ public class Explorer {
             Intent intent = new Intent();
             intent.setAction(android.content.Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(sd),MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(sd.toURI()))));
-            context.startActivity(intent);
+            try{
+                context.startActivity(intent);
+            } catch (Exception e){
+                Toast.makeText(context, "No se ha podido ejecutar este archivo", Toast.LENGTH_SHORT).show();
+            }
             return null;
         }
         return result;
@@ -81,6 +92,57 @@ public class Explorer {
 
 
         return context.getResources().getDrawable(R.drawable.ic_launcher);
+    }
+
+    public static void archiveCopy(File file){
+        lastCache = file;
+        canPast = true;
+
+        Toast.makeText(context, "Copiar", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public static void archiveCut(File file){
+        lastCache = file;
+        canPast = true;
+        isCut = true;
+
+        Toast.makeText(context, "Cortar", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public static void archivePaste(File file){
+        canPast = false;
+        File newFile = new File(file.getPath() + "/" + lastCache.getName());
+        InputStream in;
+        OutputStream out;
+        try {
+            in = new FileInputStream(lastCache);
+            out = new FileOutputStream(newFile);
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (Exception e){
+            try {
+                in = new FileInputStream(lastCache);
+                out = new FileOutputStream(file);
+            } catch (Exception i){}
+
+            }
+        if(isCut) {
+            lastCache.delete();
+            isCut = false;
+
+        }
+
+        Toast.makeText(context, "Pegar", Toast.LENGTH_SHORT).show();
+
     }
 
 }
