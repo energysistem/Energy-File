@@ -11,14 +11,17 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.energy.fileexplorer.List.Item.MainItem;
-import com.energy.fileexplorer.List.Item.MenuItem;
+import com.energy.fileexplorer.MainActivity;
 import com.energy.fileexplorer.R;
 
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +31,7 @@ public class Explorer {
     public static Context context;
     public static boolean canPast = false;
     private static boolean isCut = false;
-    private static File lastCache;
+    private static ArrayList<File> lastCache;
 
     public static ArrayList<MainItem> showArchives(File sd){
         ArrayList<MainItem> result = new ArrayList<MainItem>();
@@ -42,7 +45,7 @@ public class Explorer {
                         String prueba = "";
                         try{
                             prueba = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(aux.toURI())));
-                            prueba += "    ____    "+MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(aux.toURI()));
+                            prueba += "  _  "+MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(aux.toURI()));
                         } catch (Exception e){}
                         result.add(new MainItem(getIcon(aux), aux.getName(), prueba, aux));
                     }
@@ -83,8 +86,6 @@ public class Explorer {
                 pi.applicationInfo.publicSourceDir = APKFilePath;
                 //
                 Drawable APKicon = pi.applicationInfo.loadIcon(pm);
-
-
                 return APKicon;
             }
                 else
@@ -94,33 +95,106 @@ public class Explorer {
         return context.getResources().getDrawable(R.drawable.ic_launcher);
     }
 
-    public static void archiveCopy(File file){
+    public static void archiveCopy(ArrayList<File> file){
         lastCache = file;
         canPast = true;
 
-        Toast.makeText(context, "Copiar", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getText(R.string.eCopy), Toast.LENGTH_SHORT).show();
 
     }
 
-    public static void archiveCut(File file){
+    public static  void sendBackMessage(){
+        Toast.makeText(context, context.getText(R.string.eBackFragment), Toast.LENGTH_SHORT).show();
+    }
+
+    public static void archiveCut(ArrayList<File> file){
         lastCache = file;
         canPast = true;
         isCut = true;
 
-        Toast.makeText(context, "Cortar", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getText(R.string.eCut), Toast.LENGTH_SHORT).show();
 
+    }
+
+    public static void archiveDelete(ArrayList<File> file){
+        int numFiles = file.size();
+        File[] aux = new File[numFiles];
+        for(int i = 0; i< numFiles;i++)
+            aux[i] = file.get(i);
+        archiveDelete(aux);
+
+        isCut = false;
+        MainActivity.reloadFragmentMain();
+        Toast.makeText(context, context.getText(R.string.eDelete), Toast.LENGTH_SHORT).show();
+    }
+
+    public static void archiveDelete(File file){
+        if(file.isDirectory())
+            archiveDelete(file.listFiles());
+        file.delete();
+    }
+
+    private static void archiveDelete(File[] file){
+        for(File aux : file)
+            if (file != null) {
+                if (aux.isDirectory()) {
+                    String[] children = aux.list();
+                    for (int i = 0; i < children.length; i++) {
+                        archiveDelete(new File(aux, children[i]));
+                    }
+                }
+                aux.delete();
+            }
     }
 
     public static void archivePaste(File file){
         canPast = false;
-        File newFile = new File(file.getPath() + "/" + lastCache.getName());
-        InputStream in;
-        OutputStream out;
-        try {
-            in = new FileInputStream(lastCache);
-            out = new FileOutputStream(newFile);
+        File newFile;
+        int numfiles = lastCache.size();
+        for(int i = 0;i<numfiles;i++) {
+            newFile = lastCache.get(i);
+            try {
+                copyDirectory(newFile,new File(file + "/" + newFile.getName()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-            // Transfer bytes from in to out
+
+        }
+
+        if(isCut)
+            archiveDelete(lastCache);
+
+        MainActivity.reloadFragmentMain();
+        Toast.makeText(context, context.getText(R.string.ePaste), Toast.LENGTH_SHORT).show();
+
+    }
+
+    private static void copyDirectory(File sourceLocation , File targetLocation)
+            throws IOException {
+
+        if (sourceLocation.isDirectory()) {
+            if (!targetLocation.exists() && !targetLocation.mkdirs()) {
+                throw new IOException("Cannot create dir " + targetLocation.getAbsolutePath());
+            }
+
+            String[] children = sourceLocation.list();
+            for (int i=0; i<children.length; i++) {
+                copyDirectory(new File(sourceLocation, children[i]),
+                        new File(targetLocation, children[i]));
+            }
+        } else {
+
+            // make sure the directory we plan to store the recording in exists
+            File directory = targetLocation.getParentFile();
+            if (directory != null && !directory.exists() && !directory.mkdirs()) {
+                throw new IOException("Cannot create dir " + directory.getAbsolutePath());
+            }
+
+            InputStream in = new FileInputStream(sourceLocation);
+            OutputStream out = new FileOutputStream(targetLocation);
+
+            // Copy the bits from instream to outstream
             byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
@@ -128,21 +202,7 @@ public class Explorer {
             }
             in.close();
             out.close();
-        } catch (Exception e){
-            try {
-                in = new FileInputStream(lastCache);
-                out = new FileOutputStream(file);
-            } catch (Exception i){}
-
-            }
-        if(isCut) {
-            lastCache.delete();
-            isCut = false;
-
         }
-
-        Toast.makeText(context, "Pegar", Toast.LENGTH_SHORT).show();
-
     }
 
 }

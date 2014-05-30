@@ -12,6 +12,7 @@
 
         <activity
             android:name="com.energy.fileexplorer.MainActivity"
+            android:configChanges="layoutDirection|orientation|locale"
             android:label="@string/app_name" >
 
 

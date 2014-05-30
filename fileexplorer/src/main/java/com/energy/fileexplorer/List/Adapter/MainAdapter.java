@@ -2,6 +2,7 @@ package com.energy.fileexplorer.List.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class MainAdapter extends ArrayAdapter<MainItem> {
     Context mContext;
     int layoutResourceId;
     List<MainItem> data = null;
+    private boolean[] dataSelected = null;
 
     public MainAdapter(Context mContext, int layoutResourceId, List<MainItem> data) {
 
@@ -31,6 +33,8 @@ public class MainAdapter extends ArrayAdapter<MainItem> {
         this.layoutResourceId = layoutResourceId;
         this.mContext = mContext;
         this.data = data;
+
+        cleanSelected();
     }
 
     @Override
@@ -49,7 +53,30 @@ public class MainAdapter extends ArrayAdapter<MainItem> {
         textViewName.setText(folder.text);
         subtextViewName.setText(folder.subText);
 
+        if(dataSelected[position])
+            convertView.setBackgroundColor(Color.LTGRAY);
+
         return convertView;
     }
+
+    public void setItemSelected(int pos){
+        if(dataSelected[pos])
+            dataSelected[pos] = false;
+        else
+            dataSelected[pos] = true;
+    }
+
+    public void cleanSelected(){
+        int aux = data.size();
+        dataSelected = new boolean[aux];
+        for(int i = 0; i< aux;i++){
+            dataSelected[i] = false;
+        }
+    }
+
+    public boolean isItemSelected(int num){
+        return dataSelected[num];
+    }
+
 
 }

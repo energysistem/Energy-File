@@ -33,4 +33,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public int getItemPosition(Object object) {
         return PagerAdapter.POSITION_NONE;
     }
+
+
 }

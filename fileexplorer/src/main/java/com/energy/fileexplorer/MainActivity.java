@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.TargetApi;
-import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import com.energy.fileexplorer.File.Explorer;
 import com.energy.fileexplorer.Fragment.DefaultFragment;
 import com.energy.fileexplorer.List.Adapter.FragmentAdapter;
 import com.energy.fileexplorer.List.Adapter.MenuAdapter;
-import com.energy.fileexplorer.List.Item.MainItem;
 import com.energy.fileexplorer.List.Item.MenuItem;
 
 
@@ -48,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
     private static ArrayList<File> mainViews;
     private static ViewPager mViewPager;
     private boolean backButtonExit = false;
+    private static int lastFragment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +54,24 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         /** Slide Navegation */
         mainViews = new ArrayList<File>();
-        mainViews.add(Environment.getExternalStorageDirectory());
+        listaFragments = new ArrayList<Fragment>();
+
+        try{
+
+            String[] savedFiles = savedInstanceState.getStringArray("keyFiles");
+            lastFragment = savedInstanceState.getInt("keyPosition");
+            for(int i = 0; i< savedFiles.length;i++) {
+                mainViews.add(new File(savedFiles[i]));
+                listaFragments.add(new DefaultFragment(i));
+            }
+
+        } catch (Exception e){
+            mainViews.add(Environment.getExternalStorageDirectory());
+            listaFragments.add(new DefaultFragment(0));
+        }
 
         Explorer.context = this;
 
-        listaFragments = new ArrayList<Fragment>();
-        listaFragments.add(new DefaultFragment(0));
         fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), listaFragments);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(fragmentAdapter);
@@ -116,7 +127,24 @@ public class MainActivity extends ActionBarActivity {
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayShowHomeEnabled(false);
 
+        Menu maniMenu = (Menu) this.findViewById(R.menu.main);
 
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        String[] files = new String[mainViews.size()];
+        for(int i = 0; i < files.length;i++)
+            files[i] = mainViews.get(i).getAbsolutePath();
+        outState.putStringArray("keyFiles", files);
+        outState.putInt("keyPosition", mViewPager.getCurrentItem());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -159,18 +187,24 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        if(mViewPager.getCurrentItem() != 0) {
+            backFragmentMain();
+            return;
+        }
+
         if(backButtonExit)
             super.onBackPressed();
-        else
+        else {
             backButtonExit = true;
+            Explorer.sendBackMessage();
+        }
         Thread thread = new Thread() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                 }
-
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -179,7 +213,7 @@ public class MainActivity extends ActionBarActivity {
                 });
             }
         };
-        thread.run();
+        thread.start();
     }
 
     public static void addFragmentMain(File newFile, int pos){
@@ -195,8 +229,24 @@ public class MainActivity extends ActionBarActivity {
         mViewPager.setCurrentItem(pos);
     }
 
+    public static void reloadFragmentMain(){
+        int pos = mViewPager.getCurrentItem();
+        listaFragments.set(pos, new DefaultFragment(pos));
+        fragmentAdapter.notifyDataSetChanged();
+        mViewPager.setCurrentItem(pos);
+
+    }
+
+    public static void backFragmentMain(){
+        mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+    }
+
     public static File getFile(int pos){
         return mainViews.get(pos);
+    }
+
+    public static int getLastFragment(){
+        return lastFragment;
     }
 
 

@@ -13,13 +13,12 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="eCopy">Copy</string>
-    <string name="eCut">Cut</string>
-    <string name="ePaste">Paste</string>
-    <string name="eDelete">Delete</string>
-    <string name="eRename">Rename</string>
-    <string name="eNewFolder">New Folder</string>
-    <string name="eBackFragment">Pres "Back" button again for exit.</string>
-    <string name="eSelect">Select</string>
+    <string name="eCopy">Copiar</string>
+    <string name="eCut">Cortar</string>
+    <string name="ePaste">Pegar</string>
+    <string name="eDelete">Eliminar</string>
+    <string name="eRename">Renombrar</string>
+    <string name="eNewFolder">Crear Carpeta</string>
+    <string name="eBackFragment">Presione el botón "Atras" otra vez para salir.</string>
 
 </resources>

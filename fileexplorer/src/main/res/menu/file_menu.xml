@@ -3,23 +3,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/mFileCopy"
-        android:title="Copiar"/>
+        android:title="@string/eCopy"/>
 
     <item
         android:id="@+id/mFileCut"
-        android:title="Cortar"/>
+        android:title="@string/eCut"/>
 
     <item
         android:id="@+id/mFilePast"
-        android:title="Pegar"
+        android:title="@string/ePaste"
         android:enabled="false"/>
 
     <item
+        android:id="@+id/mFileDelete"
+        android:title="@string/eDelete"/>
+
+    <item
         android:id="@+id/mFileRename"
-        android:title="Renombrar"/>
+        android:title="@string/eRename"/>
 
     <item
         android:id="@+id/mFileNewFolder"
-        android:title="Crear carpeta"/>
+        android:title="@string/eNewFolder"/>
 
 </menu>
