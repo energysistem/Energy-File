@@ -1,24 +1,23 @@
 package com.energy.fileexplorer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.TargetApi;
-import android.content.res.Configuration;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.energy.fileexplorer.File.Explorer;
@@ -26,6 +25,10 @@ import com.energy.fileexplorer.Fragment.DefaultFragment;
 import com.energy.fileexplorer.List.Adapter.FragmentAdapter;
 import com.energy.fileexplorer.List.Adapter.MenuAdapter;
 import com.energy.fileexplorer.List.Item.MenuItem;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -41,8 +44,8 @@ public class MainActivity extends ActionBarActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
-    private static  List<Fragment> listaFragments;
-    private static  FragmentAdapter fragmentAdapter;
+    private static List<Fragment> listaFragments;
+    private static FragmentAdapter fragmentAdapter;
     private static ArrayList<File> mainViews;
     private static ViewPager mViewPager;
     private boolean backButtonExit = false;
@@ -56,16 +59,16 @@ public class MainActivity extends ActionBarActivity {
         mainViews = new ArrayList<File>();
         listaFragments = new ArrayList<Fragment>();
 
-        try{
+        try {
 
             String[] savedFiles = savedInstanceState.getStringArray("keyFiles");
             lastFragment = savedInstanceState.getInt("keyPosition");
-            for(int i = 0; i< savedFiles.length;i++) {
+            for (int i = 0; i < savedFiles.length; i++) {
                 mainViews.add(new File(savedFiles[i]));
                 listaFragments.add(new DefaultFragment(i));
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             mainViews.add(Environment.getExternalStorageDirectory());
             listaFragments.add(new DefaultFragment(0));
         }
@@ -78,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
 
 
         /** Navigation Drawer */
-        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         MenuItem[] menuItems = new MenuItem[5];
@@ -127,15 +130,14 @@ public class MainActivity extends ActionBarActivity {
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayShowHomeEnabled(false);
 
-        Menu maniMenu = (Menu) this.findViewById(R.menu.main);
-
 
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         String[] files = new String[mainViews.size()];
-        for(int i = 0; i < files.length;i++)
+        for (int i = 0; i < files.length; i++)
             files[i] = mainViews.get(i).getAbsolutePath();
         outState.putStringArray("keyFiles", files);
         outState.putInt("keyPosition", mViewPager.getCurrentItem());
@@ -149,7 +151,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -158,6 +160,20 @@ public class MainActivity extends ActionBarActivity {
     //Changed by Navigation Drawer
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mSelect:
+                DefaultFragment aux = (DefaultFragment) listaFragments.get(mViewPager.getCurrentItem());
+                aux.showMenu();
+                break;
+            case R.id.mNewFolder:
+                createFolder();
+                reloadFragmentMain();
+                break;
+
+            case R.id.mSettings:
+
+                break;
+        }
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -187,12 +203,12 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(mViewPager.getCurrentItem() != 0) {
+        if (mViewPager.getCurrentItem() != 0) {
             backFragmentMain();
             return;
         }
 
-        if(backButtonExit)
+        if (backButtonExit)
             super.onBackPressed();
         else {
             backButtonExit = true;
@@ -216,8 +232,44 @@ public class MainActivity extends ActionBarActivity {
         thread.start();
     }
 
-    public static void addFragmentMain(File newFile, int pos){
-        while(mainViews.size() > pos){
+    private void createFolder() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setTitle("Crear Carpeta");
+
+
+        alertDialog.setMessage("Introduce el nombre:");
+        final EditText input = new EditText(MainActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        alertDialog.setView(input);
+
+
+        alertDialog.setIcon(R.drawable.file_explorer);
+
+        alertDialog.setPositiveButton("Crear",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Explorer.createFolder(mainViews.get(mViewPager.getCurrentItem()), input.getText().toString());
+                    }
+                }
+        );
+
+        alertDialog.setNegativeButton("Cancelar",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Write your code here to execute after dialog
+                        dialog.cancel();
+                    }
+                }
+        );
+
+        alertDialog.show();
+    }
+
+    public static void addFragmentMain(File newFile, int pos) {
+        while (mainViews.size() > pos) {
             mainViews.remove(pos);
             listaFragments.remove(pos);
         }
@@ -229,28 +281,39 @@ public class MainActivity extends ActionBarActivity {
         mViewPager.setCurrentItem(pos);
     }
 
-    public static void reloadFragmentMain(){
+    public static void reloadFragmentMain() {
         int pos = mViewPager.getCurrentItem();
+        for (int i = mainViews.size() - 1; i >= 0; i--) {
+            if (!mainViews.get(i).exists()) {
+                mainViews.remove(i);
+                listaFragments.remove(i);
+            }
+        }
+        if (pos >= mainViews.size())
+            pos = mainViews.size() - 1;
+
         listaFragments.set(pos, new DefaultFragment(pos));
         fragmentAdapter.notifyDataSetChanged();
         mViewPager.setCurrentItem(pos);
 
     }
 
-    public static void backFragmentMain(){
+    public static void backFragmentMain() {
         mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
     }
 
-    public static File getFile(int pos){
+    public static File getFile(int pos) {
         return mainViews.get(pos);
     }
 
-    public static int getLastFragment(){
+    public static int getLastFragment() {
         return lastFragment;
     }
 
 
-    /**  ----------------------------------------------------------------------------------------------------   */
+    /**
+     * ----------------------------------------------------------------------------------------------------
+     */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
         @Override
@@ -268,7 +331,7 @@ public class MainActivity extends ActionBarActivity {
             switch (position) {
                 case 0:
                     mViewPager.setCurrentItem(0);
-                    while(mainViews.size() > 1){
+                    while (mainViews.size() > 1) {
                         mainViews.remove(1);
                         listaFragments.remove(1);
                     }

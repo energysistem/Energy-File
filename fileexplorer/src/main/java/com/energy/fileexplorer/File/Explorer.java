@@ -129,9 +129,11 @@ public class Explorer {
     }
 
     public static void archiveDelete(File file){
-        if(file.isDirectory())
+        if(file.isDirectory() && file.listFiles().length > 0)
             archiveDelete(file.listFiles());
-        file.delete();
+        try {
+            file.delete();
+        } catch (Exception e){}
     }
 
     private static void archiveDelete(File[] file){
@@ -150,16 +152,18 @@ public class Explorer {
     public static void archivePaste(File file){
         canPast = false;
         File newFile;
-        int numfiles = lastCache.size();
-        for(int i = 0;i<numfiles;i++) {
+        int numfiles = lastCache.size() -1;
+        for(int i = numfiles;i>=0;i--) {
             newFile = lastCache.get(i);
             try {
-                copyDirectory(newFile,new File(file + "/" + newFile.getName()));
-            } catch (IOException e) {
+                //copyDirectory(newFile,new File(file + "/" + newFile.getName()));
+                if(!copyArchives(file,newFile)){
+                    Toast.makeText(context, "Error al copiar.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
         }
 
         if(isCut)
@@ -170,39 +174,46 @@ public class Explorer {
 
     }
 
-    private static void copyDirectory(File sourceLocation , File targetLocation)
-            throws IOException {
+    private static boolean copyArchives(File newLocation, File file){
+        File newFile = new File(newLocation + "/" + file.getName());
+        if(newFile.exists())
+            return false;
 
-        if (sourceLocation.isDirectory()) {
-            if (!targetLocation.exists() && !targetLocation.mkdirs()) {
-                throw new IOException("Cannot create dir " + targetLocation.getAbsolutePath());
+        if(file.isDirectory()){
+            File[] forCopy = file.listFiles();
+            newFile.mkdir();
+            for(int i = 0 ; i< forCopy.length;i++){
+                if(!copyArchives(newFile,forCopy[i]))
+                    return false;
             }
 
-            String[] children = sourceLocation.list();
-            for (int i=0; i<children.length; i++) {
-                copyDirectory(new File(sourceLocation, children[i]),
-                        new File(targetLocation, children[i]));
-            }
         } else {
+            try {
+                InputStream in = new FileInputStream(file);
+                OutputStream out = new FileOutputStream(newFile);
 
-            // make sure the directory we plan to store the recording in exists
-            File directory = targetLocation.getParentFile();
-            if (directory != null && !directory.exists() && !directory.mkdirs()) {
-                throw new IOException("Cannot create dir " + directory.getAbsolutePath());
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                in.close();
+                out.close();
+            } catch (Exception e){
+                return false;
             }
-
-            InputStream in = new FileInputStream(sourceLocation);
-            OutputStream out = new FileOutputStream(targetLocation);
-
-            // Copy the bits from instream to outstream
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
         }
+
+        return true;
+
+    }
+
+    public static void createFolder(File file, String name){
+        File newDir = new File(file.getAbsolutePath() + "/" + name);
+        newDir.mkdir();
+
+        MainActivity.reloadFragmentMain();
+        Toast.makeText(context, context.getText(R.string.eNewFolder), Toast.LENGTH_SHORT).show();
     }
 
 }

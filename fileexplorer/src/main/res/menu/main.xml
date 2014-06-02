@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.energy.fileexplorer.MainActivity">
 
-    <item android:id="@+id/mselect"
+    <item android:id="@+id/mSelect"
         android:title="@string/eSelect" />
 
     <item android:id="@+id/mNewFolder"
         android:title="@string/eNewFolder"/>
     
-    <item android:id="@+id/action_settings"
+    <item android:id="@+id/mSettings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />

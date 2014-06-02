@@ -1,12 +1,16 @@
 package com.energy.fileexplorer.Fragment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -15,6 +19,7 @@ import com.energy.fileexplorer.List.Adapter.MainAdapter;
 import com.energy.fileexplorer.List.Item.MainItem;
 import com.energy.fileexplorer.MainActivity;
 import com.energy.fileexplorer.R;
+import com.energy.fileexplorer.View.DialogGetText;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,7 +32,7 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
     private List<MainItem> mainItems;
     private File file;
     private int pos;
-    private LinearLayout menu = null;
+    private LinearLayout toolMenu = null;
     private boolean isMenuVisible = false;
     private View rootView = null;
     private MainAdapter adapter = null;
@@ -38,8 +43,8 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
     }
 
     public DefaultFragment(){
-        this.file = MainActivity.getFile(MainActivity.getLastFragment());
-        this.pos = MainActivity.getLastFragment();
+        //this.file = MainActivity.getFile(MainActivity.getLastFragment());
+        //this.pos = MainActivity.getLastFragment();
     }
 
     @Override
@@ -48,7 +53,7 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
         // TODO Auto-generated method stub
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final ListView listview = (ListView) rootView.findViewById(R.id.listView);
-        menu = (LinearLayout) rootView.findViewById(R.id.menuLayout);
+        toolMenu = (LinearLayout) rootView.findViewById(R.id.menuLayout);
         mainItems = Explorer.showArchives(file);
 
         adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, mainItems);
@@ -137,6 +142,8 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
         rootView.setOnClickListener(this);
         this.rootView = rootView;
 
+        //Menu mainMenu = (Menu) rootView.findViewById(R.menu.main);
+
         return rootView;
     }
 
@@ -160,7 +167,7 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
 
     @Override
     public void setMenuVisibility(boolean menuVisible) {
-        if(menu != null && !menuVisible)
+        if(toolMenu != null && !menuVisible)
             hideMenu();
         super.setMenuVisibility(menuVisible);
     }
@@ -174,12 +181,29 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
         adapter.cleanSelected();
         adapter.notifyDataSetChanged();
         isMenuVisible = false;
-        menu.setVisibility(View.GONE);
+        toolMenu.setVisibility(View.GONE);
 
     }
 
-    private void showMenu(){
+    public void showMenu(){
         isMenuVisible = true;
-        menu.setVisibility(View.VISIBLE);
+        toolMenu.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mSelect:
+                showMenu();
+                break;
+            case  R.id.mNewFolder:
+                //createFolder();
+                break;
+
+            case R.id.mSettings:
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
