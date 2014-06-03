@@ -155,14 +155,20 @@ public class Explorer {
         int numfiles = lastCache.size() -1;
         for(int i = numfiles;i>=0;i--) {
             newFile = lastCache.get(i);
-            try {
+
+            if(file.isDirectory() && newFile.getAbsolutePath().startsWith(file.getAbsolutePath())){
                 //copyDirectory(newFile,new File(file + "/" + newFile.getName()));
-                if(!copyArchives(file,newFile)){
+                if (!copyArchives(file, toArchive(newFile)))
+                    Toast.makeText(context, "Error al copiar.", Toast.LENGTH_SHORT).show();
+
+
+            } else {
+                //copyDirectory(newFile,new File(file + "/" + newFile.getName()));
+                if (!copyArchives(file, newFile)) {
                     Toast.makeText(context, "Error al copiar.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+
             }
         }
 
@@ -171,6 +177,41 @@ public class Explorer {
 
         MainActivity.reloadFragmentMain();
         Toast.makeText(context, context.getText(R.string.ePaste), Toast.LENGTH_SHORT).show();
+
+    }
+
+    private static Archive toArchive(File file){
+        int num = file.listFiles().length;
+        Archive[] subfiles = new Archive[num];
+        for(int i = 0; i< num;i++) {
+            if(file.listFiles()[i].isDirectory())
+                subfiles[i] = toArchive(file.listFiles()[i]);
+            else
+                subfiles[i] = new Archive(file.listFiles()[i]);
+        }
+        return new Archive(file,subfiles);
+    }
+
+    private static boolean copyArchives(File newLocation, Archive file){
+        File newFile = new File(newLocation + "/" + file.getFile().getName());
+        if(newFile.exists())
+            return false;
+
+        Archive[] forCopy = file.getSubFiles();
+        newFile.mkdir();
+        for(int i = 0 ; i< forCopy.length;i++){
+            if(forCopy[i].isDirectory()){
+                if(!copyArchives(newFile,forCopy[i]))
+                    return false;
+            }else {
+                if (!copyArchives(newFile, forCopy[i].getFile()))
+                    return false;
+            }
+
+
+        }
+
+        return true;
 
     }
 

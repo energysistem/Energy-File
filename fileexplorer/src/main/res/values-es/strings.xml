@@ -12,7 +12,7 @@
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Ajustes</string>
     <string name="eCopy">Copiar</string>
     <string name="eCut">Cortar</string>
     <string name="ePaste">Pegar</string>
@@ -20,5 +20,6 @@
     <string name="eRename">Renombrar</string>
     <string name="eNewFolder">Crear Carpeta</string>
     <string name="eBackFragment">Presione el botón "Atras" otra vez para salir.</string>
+    <string name="eSelect">Seleccionar</string>
 
 </resources>
