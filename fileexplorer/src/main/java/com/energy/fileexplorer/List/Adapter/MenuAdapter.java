@@ -9,19 +9,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.energy.fileexplorer.List.Item.MenuItem;
+import com.energy.fileexplorer.List.Item.ShortCutItem;
 import com.energy.fileexplorer.R;
+
+import java.util.List;
 
 /**
  * Created by sitron on 10/04/14.
  */
-public class MenuAdapter extends ArrayAdapter<MenuItem> {
+public class MenuAdapter extends ArrayAdapter<ShortCutItem> {
 
     Context mContext;
     int layoutResourceId;
-    MenuItem data[] = null;
+    List<ShortCutItem> data = null;
 
-    public MenuAdapter(Context mContext, int layoutResourceId, MenuItem[] data) {
+    public MenuAdapter(Context mContext, int layoutResourceId, List<ShortCutItem> data) {
 
         super(mContext, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
@@ -40,7 +42,7 @@ public class MenuAdapter extends ArrayAdapter<MenuItem> {
         ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.imageViewIcon);
         TextView textViewName = (TextView) listItem.findViewById(R.id.textViewName);
 
-        MenuItem folder = data[position];
+        ShortCutItem folder = data.get(position);
 
 
         imageViewIcon.setImageResource(folder.icon);

@@ -2,24 +2,19 @@ package com.energy.fileexplorer.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.energy.fileexplorer.File.Explorer;
-import com.energy.fileexplorer.List.Adapter.MainAdapter;
+import com.energy.fileexplorer.List.Adapter.DefaultMainAdapter;
 import com.energy.fileexplorer.List.Item.MainItem;
 import com.energy.fileexplorer.MainActivity;
 import com.energy.fileexplorer.R;
-import com.energy.fileexplorer.View.DialogGetText;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +30,7 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
     private LinearLayout toolMenu = null;
     private boolean isMenuVisible = false;
     private View rootView = null;
-    private MainAdapter adapter = null;
+    private DefaultMainAdapter adapter = null;
 
     public DefaultFragment(int pos){
         this.file = MainActivity.getFile(pos);
@@ -51,12 +46,13 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main_default, container, false);
         final ListView listview = (ListView) rootView.findViewById(R.id.listView);
         toolMenu = (LinearLayout) rootView.findViewById(R.id.menuLayout);
         mainItems = Explorer.showArchives(file);
 
-        adapter = new MainAdapter(getActivity(), R.layout.fragmentlist_file, mainItems);
+
+        adapter = new DefaultMainAdapter(getActivity(),R.id.listView, mainItems);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -138,6 +134,14 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
             }
         });
 
+        LinearLayout lexit = (LinearLayout) rootView.findViewById(R.id.menuExit);
+        lexit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideMenu();
+            }
+        });
+
         rootView.setOnLongClickListener(this);
         rootView.setOnClickListener(this);
         this.rootView = rootView;
@@ -150,17 +154,6 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
     @Override
     public boolean onLongClick(View v) {
         showMenu();
-
-        /**
-         if (item.getItemId() == R.id.mFileCopy)
-         Explorer.archiveCopy(mainItems.get(position).file);
-         else if (item.getItemId() == R.id.mFileCut)
-         Explorer.archiveCut(mainItems.get(position).file);
-         else if (item.getItemId() == R.id.mFilePast)
-         Explorer.archivePaste(MainActivity.getFile(pos));
-         else if (item.getItemId() == R.id.mFileDelete)
-         Explorer.archiveDelete(mainItems.get(position).file);
-         */
 
         return true;
     }
@@ -177,7 +170,7 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
         hideMenu();
     }
 
-    private void hideMenu(){
+    public void hideMenu(){
         adapter.cleanSelected();
         adapter.notifyDataSetChanged();
         isMenuVisible = false;
@@ -186,24 +179,15 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
     }
 
     public void showMenu(){
-        isMenuVisible = true;
-        toolMenu.setVisibility(View.VISIBLE);
+        if(isMenuVisible)
+            hideMenu();
+        else {
+            isMenuVisible = true;
+            toolMenu.setVisibility(View.VISIBLE);
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.mSelect:
-                showMenu();
-                break;
-            case  R.id.mNewFolder:
-                //createFolder();
-                break;
-
-            case R.id.mSettings:
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean isMenuHide(){
+        return isMenuVisible;
     }
 }

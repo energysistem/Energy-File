@@ -3,8 +3,9 @@ package com.energy.fileexplorer.File;
 import java.io.File;
 
 /**
- * Created by MFC on 27/05/2014.
+ * Esta clase se utiliza unicamente para crear un buffer de todo el contenido de una carpeta
  */
+
 public class Archive {
     private boolean directory;
     private Archive[] subFiles;

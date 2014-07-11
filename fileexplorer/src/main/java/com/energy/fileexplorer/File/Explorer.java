@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * Created by MFC on 15/05/2014.
+ * Clase que se utiliza como herramienta para la gestión de archivos
  */
 public class Explorer {
     public static Context context;
@@ -34,22 +36,7 @@ public class Explorer {
     private static ArrayList<File> lastCache;
 
     public static ArrayList<MainItem> showArchives(File sd){
-        ArrayList<MainItem> result = new ArrayList<MainItem>();
-        File[] dirsList = sd.listFiles();
-        if(dirsList != null) {
-            for (File aux : dirsList)
-                if (!aux.isHidden())
-                    if (aux.isDirectory())
-                        result.add(new MainItem(context.getResources().getDrawable(R.drawable.file_explorer), aux.getName(), "Archivos: " + aux.listFiles().length, aux));
-                    else {
-                        String prueba = "";
-                        try{
-                            prueba = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(aux.toURI())));
-                            prueba += "  _  "+MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(aux.toURI()));
-                        } catch (Exception e){}
-                        result.add(new MainItem(getIcon(aux), aux.getName(), prueba, aux));
-                    }
-        } else {
+        if(sd.exists() && !sd.isDirectory()){
             Intent intent = new Intent();
             intent.setAction(android.content.Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(sd),MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(sd.toURI()))));
@@ -60,6 +47,22 @@ public class Explorer {
             }
             return null;
         }
+        ArrayList<MainItem> result = new ArrayList<MainItem>();
+        File[] dirsList = sd.listFiles();
+        Arrays.sort(dirsList);
+
+        for (File aux : dirsList)
+            if (!aux.isHidden())
+                if (aux.isDirectory())
+                    result.add(new MainItem(context.getResources().getDrawable(R.drawable.file_explorer), aux.getName(), "Archivos: " + aux.listFiles().length, aux));
+                else {
+                    String prueba = "";
+                    try{
+                        prueba = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(aux.toURI())));
+                        prueba += "  _  "+MimeTypeMap.getSingleton().getFileExtensionFromUrl(String.valueOf(aux.toURI()));
+                    } catch (Exception e){}
+                    result.add(new MainItem(getIcon(aux), aux.getName(), prueba, aux));
+                }
         return result;
     }
 

@@ -2,7 +2,11 @@ package com.energy.fileexplorer;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,16 +25,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.energy.fileexplorer.File.Explorer;
+import com.energy.fileexplorer.File.ExternalStorage;
 import com.energy.fileexplorer.Fragment.DefaultFragment;
+import com.energy.fileexplorer.Fragment.GridFragment;
 import com.energy.fileexplorer.List.Adapter.FragmentAdapter;
 import com.energy.fileexplorer.List.Adapter.MenuAdapter;
-import com.energy.fileexplorer.List.Item.MenuItem;
+import com.energy.fileexplorer.List.Item.ShortCutItem;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Actividad Principal
+ */
 public class MainActivity extends ActionBarActivity {
 
     /**
@@ -44,12 +52,24 @@ public class MainActivity extends ActionBarActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
+    /**
+     * Objetos principales
+     */
+    //Lista de fragmentos de la pantalla principal
     private static List<Fragment> listaFragments;
+    //Adaptado de la lista de fragmentos
     private static FragmentAdapter fragmentAdapter;
+    //Lista de las carpetas que estan abiertas
     private static ArrayList<File> mainViews;
+    //ViewPager donde se carga el fragment
     private static ViewPager mViewPager;
+    //Se utiliza para comprobar si el botón "Atras" del Navegation Bar tiene que cerrar la aplicación.
     private boolean backButtonExit = false;
+    //Se utiliza para cuando la pantalla gire, saver en que fragmento nos encontramos.
     private static int lastFragment = 0;
+    private static List<ShortCutItem> shortCutItems;
+    private static MenuAdapter shortCutAdapter;
+    //private List<ShortCutItem> Removeable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +78,11 @@ public class MainActivity extends ActionBarActivity {
         /** Slide Navegation */
         mainViews = new ArrayList<File>();
         listaFragments = new ArrayList<Fragment>();
+        //ExternalStorage externalStorage = new ExternalStorage();
+        //registerSDCardStateChangeListener();
+        ExternalStorage externalStorage = new ExternalStorage(this);
 
+      //Guardar el estado anterior
         try {
 
             String[] savedFiles = savedInstanceState.getStringArray("keyFiles");
@@ -84,17 +108,19 @@ public class MainActivity extends ActionBarActivity {
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        MenuItem[] menuItems = new MenuItem[5];
+        shortCutItems = new ArrayList<ShortCutItem>();
 
-        menuItems[0] = new MenuItem(R.drawable.file_explorer, "Home");
-        menuItems[1] = new MenuItem(R.drawable.music, "Music");
-        menuItems[2] = new MenuItem(R.drawable.video_player, "Video");
-        menuItems[3] = new MenuItem(R.drawable.gallery, "Gallery");
-        menuItems[4] = new MenuItem(R.drawable.ereader, "Ebook");
+        shortCutItems.add(new ShortCutItem(R.drawable.file_explorer, "Home"));
+        shortCutItems.add(new ShortCutItem(R.drawable.music, "Music"));
+        shortCutItems.add(new ShortCutItem(R.drawable.video_player, "Video"));
+        shortCutItems.add(new ShortCutItem(R.drawable.gallery, "Gallery"));
+        shortCutItems.add(new ShortCutItem(R.drawable.ereader, "Ebook"));
 
 
-        MenuAdapter adapter = new MenuAdapter(this, R.layout.listview_item_row, menuItems);
-        mDrawerList.setAdapter(adapter);
+        shortCutAdapter = new MenuAdapter(this, R.layout.listview_item_row, shortCutItems);
+        mDrawerList.setAdapter(shortCutAdapter);
+        externalStorage.controlMediaShortCut();
+
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         mTitle = mDrawerTitle = getTitle();
@@ -129,7 +155,6 @@ public class MainActivity extends ActionBarActivity {
         getActionBar().setIcon(null);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayShowHomeEnabled(false);
-
 
     }
 
@@ -203,6 +228,11 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        if(((DefaultFragment )listaFragments.get(mViewPager.getCurrentItem())).isMenuHide()){
+            ((DefaultFragment )listaFragments.get(mViewPager.getCurrentItem())).hideMenu();
+            return;
+        }
+
         if (mViewPager.getCurrentItem() != 0) {
             backFragmentMain();
             return;
@@ -311,6 +341,20 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
+    public static void addRemovableItem(ShortCutItem shortCutItem){
+        if(!shortCutItems.contains(shortCutItem)) {
+            shortCutItems.add(shortCutItem);
+            shortCutAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public static void delRemovableItem(ShortCutItem shortCutItem){
+        if(shortCutItems.contains(shortCutItem)) {
+            shortCutItems.remove(shortCutItems.indexOf(shortCutItem));
+            shortCutAdapter.notifyDataSetChanged();
+        }
+    }
+
     /**
      * ----------------------------------------------------------------------------------------------------
      */
@@ -340,7 +384,18 @@ public class MainActivity extends ActionBarActivity {
                     mViewPager.setCurrentItem(0);
                     break;
                 case 1:
-                    //fragment = new ReadFragment();
+                    listaFragments.add(0,new GridFragment(0));
+                    mainViews.add(0,mainViews.get(0));
+                    mViewPager.setCurrentItem(0);
+                    while (mainViews.size() > 1) {
+                        mainViews.remove(1);
+                        listaFragments.remove(1);
+                    }
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                    fragmentAdapter.notifyDataSetChanged();
+                    mViewPager.setCurrentItem(0);
+
+                    //fragment = new GridFragment(0);
                     break;
                 case 2:
                     //fragment = new HelpFragment();
