@@ -50,6 +50,7 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
         final ListView listview = (ListView) rootView.findViewById(R.id.listView);
         toolMenu = (LinearLayout) rootView.findViewById(R.id.menuLayout);
         mainItems = Explorer.showArchives(file);
+        showMenu();
 
 
         adapter = new DefaultMainAdapter(getActivity(),R.id.listView, mainItems);
@@ -134,13 +135,13 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
             }
         });
 
-        LinearLayout lexit = (LinearLayout) rootView.findViewById(R.id.menuExit);
+        /*LinearLayout lexit = (LinearLayout) rootView.findViewById(R.id.menuExit);
         lexit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideMenu();
             }
-        });
+        });*/
 
         rootView.setOnLongClickListener(this);
         rootView.setOnClickListener(this);

@@ -14,12 +14,14 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
         android:visibility="gone"
         android:drawSelectorOnTop="false"
         android:listSelector="@android:color/white">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuCopy"
             android:gravity="center_vertical"
@@ -29,12 +31,17 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_copy"
-                android:layout_marginRight="10dp"/>
+                android:src="@drawable/copy"/>
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="30dp"
+            android:src="@drawable/divider"/>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuCut"
             android:gravity="center_vertical"
@@ -44,12 +51,17 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_cut"
-                android:layout_marginRight="10dp" />
+                android:src="@drawable/cut" />
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="30dp"
+            android:src="@drawable/divider"/>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuPaste"
             android:gravity="center_vertical"
@@ -60,12 +72,17 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_paste"
-                android:layout_marginRight="10dp" />
+                android:src="@drawable/paste" />
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="30dp"
+            android:src="@drawable/divider"/>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuDelete"
             android:gravity="center_vertical"
@@ -76,24 +93,48 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_delete"
-                android:layout_marginRight="10dp" />
+                android:src="@drawable/delete" />
         </LinearLayout>
 
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="30dp"
+            android:src="@drawable/divider"/>
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
             android:layout_height="match_parent"
-            android:id="@+id/menuExit"
-            android:gravity="end"
-            android:enabled="false"
+            android:id="@+id/menuZip"
+            android:gravity="center_vertical"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:clickable="true">
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_close"
-                android:layout_marginRight="10dp" />
+                android:src="@drawable/zip" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="30dp"
+            android:src="@drawable/divider"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:id="@+id/menuShare"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:clickable="true">
+            android:clickable="true">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/share" />
         </LinearLayout>
 
     </LinearLayout>
@@ -101,5 +142,13 @@
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/listView"/>
+        android:id="@+id/listView"
+        android:drawSelectorOnTop="false"
+        android:fastScrollAlwaysVisible="false"
+        android:fastScrollEnabled="false"
+        android:padding="5dp"
+        android:scrollbars="none"
+        android:dividerHeight="@dimen/listview_items_padding_top_bottom"
+        android:divider="@android:color/transparent"
+        />
 </LinearLayout>

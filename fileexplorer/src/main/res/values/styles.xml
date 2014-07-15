@@ -3,10 +3,41 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:textViewStyle">@style/MyFontFamilyTextView</item>
     </style>
 
     <style name="Layout" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:background">#292929</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="LinearLayoutItem" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:text">#000000</item>
+    </style>
+
+    <style name="MainItemSelectec" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/EnergyOrange</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:titleTextStyle">@style/MyActionBar.TextColor</item>
+    </style>
+
+    <style name="MyActionBar.TextColor" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textAppearance">@style/MyFontFamily</item>
+    </style>
+
+    <style name="MyFontFamily" parent="android:style/TextAppearance.Holo">
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="MyFontFamilyTextView" parent="android:style/Widget.Holo.TextView">
+        <item name="android:textAppearance">@style/MyFontFamily</item>
     </style>
 
 </resources>

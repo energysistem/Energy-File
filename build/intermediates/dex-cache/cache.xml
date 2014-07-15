@@ -2,14 +2,14 @@
 <pre-dex-items>
 
     <item
-        dex="C:\Users\MFC\AndroidStudioProjects\Energy File Explorer\EnergyFileExplorer\fileexplorer\build\intermediates\pre-dexed\debug\support-v4-19.1.0-f6f4c1e1f73a21e2b7c7b4122a0d6a3cf9abecb4.jar"
+        dex="C:\Users\MFC\AndroidStudioProjects\Energy Files\fileexplorer\build\intermediates\pre-dexed\debug\support-v4-19.1.0-f6f4c1e1f73a21e2b7c7b4122a0d6a3cf9abecb4.jar"
         jar="C:\Users\MFC\Downloads\android-sdk-windows\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
     <item
-        dex="C:\Users\MFC\AndroidStudioProjects\Energy File Explorer\EnergyFileExplorer\fileexplorer\build\intermediates\pre-dexed\debug\classes-b1e38d1fa6077e3012611377797bd0ba9467783f.jar"
-        jar="C:\Users\MFC\AndroidStudioProjects\Energy File Explorer\EnergyFileExplorer\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
+        dex="C:\Users\MFC\AndroidStudioProjects\Energy Files\fileexplorer\build\intermediates\pre-dexed\debug\classes-07bb650252919b02b5d2c3dab5c9091b33854673.jar"
+        jar="C:\Users\MFC\AndroidStudioProjects\Energy Files\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.1.0\classes.jar"
         jumboMode="false"
         revision="19.1.0"
         sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>

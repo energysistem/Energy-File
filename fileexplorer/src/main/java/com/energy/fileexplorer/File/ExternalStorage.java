@@ -54,7 +54,7 @@ public class ExternalStorage {
 
 
     public void controlMediaShortCut(){
-        String aux="";
+        /*String aux="";
         aux = Environment.getStorageState(Environment.getExternalStorageDirectory());
         for(int i = 0; i< numRemovable;i++){
             try {
@@ -65,7 +65,7 @@ public class ExternalStorage {
                     MainActivity.delRemovableItem(removeableItemList[i]);
                 }
             }catch (Exception e){}
-        }
+        }*/
 
     }
 }

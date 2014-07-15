@@ -128,7 +128,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
-                R.drawable.ic_drawer,
+                R.drawable.file_explorer,
                 R.string.drawer_open,
                 R.string.drawer_close
         ) {
@@ -150,8 +150,7 @@ public class MainActivity extends ActionBarActivity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setTitle("File Explore");
-        getActionBar().setSubtitle("Energy Sistem File Explore");
+        getActionBar().setTitle("Energy Files");
         getActionBar().setIcon(null);
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayShowHomeEnabled(false);

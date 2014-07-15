@@ -1,48 +1,107 @@
-<LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/listview_item_height"
+    android:background="@drawable/listview_item_background"
+    android:layout_gravity="center_vertical"
+    android:id="@+id/mainItemBackground"
+    style="@style/LinearLayoutItem" >
+
+    <ImageView
+        android:id="@+id/listImage"
+        android:layout_width="@dimen/listview_album_art"
+        android:layout_height="@dimen/listview_album_art"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/listview_album_margin"
+        android:scaleType="centerCrop"/>
+
+    <!-- Padding may be set on via code for some tabs -->
+
+    <TextView
+        android:id="@+id/listText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/listImage"
+        android:ellipsize="marquee"
+        android:maxLength="29"
+        android:paddingLeft="@dimen/listview_items_padding_left_top"
+        android:paddingRight="@dimen/listview_items_padding_right"
+        android:paddingTop="@dimen/listview_items_padding_top_bottom"
+        android:singleLine="true"
+        android:textSize="@dimen/text_size_medium" />
+
+    <TextView
+        android:id="@+id/listSubText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listText"
+        android:layout_toRightOf="@+id/listImage"
+        android:ellipsize="end"
+        android:paddingLeft="@dimen/listview_items_padding_left_top"
+        android:paddingRight="@dimen/listview_items_padding_right"
+        android:paddingTop="@dimen/listview_items_padding_small_top"
+        android:singleLine="true"
+        android:textSize="@dimen/text_size_small" />
+
+
+</RelativeLayout>
+
+
+
+<!--<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/activatedBackgroundIndicator"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:padding="10dp"
-    android:orientation="horizontal">
-
-    <ImageView
-        android:id="@+id/listImage"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:paddingRight="10dp"
-        android:src="@drawable/file_explorer"/>
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp"
+    android:paddingLeft="1dp"
+    android:paddingRight="1dp"
+    style="@style/LinearLayoutItem">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:id="@+id/mainItemBackground"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/listText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/abc_action_bar_title_text_size"
+
+        <ImageView
+            android:id="@+id/listImage"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:paddingRight="10dp"
-            android:text="Folder name here."
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:textColor="#ffffff" />
+            android:src="@drawable/file_explorer"/>
 
-        <TextView
-            android:id="@+id/listSubText"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/abc_action_bar_subtitle_text_size"
-            android:paddingRight="10dp"
-            android:text="Folder name here."
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:textColor="#ffffff" />
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical">
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/listText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:paddingRight="10dp"
+                android:maxLines="1"
+                android:text="Folder name here." />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/listSubText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:maxLines="1"
+                android:paddingRight="10dp"
+                android:text="Folder name here." />
+
+            </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>-->

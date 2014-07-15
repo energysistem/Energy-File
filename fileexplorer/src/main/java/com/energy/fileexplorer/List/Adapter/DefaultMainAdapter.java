@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.energy.fileexplorer.List.Item.MainItem;
@@ -45,6 +47,7 @@ public class DefaultMainAdapter extends ArrayAdapter<MainItem> {
         ImageView imageViewIcon = (ImageView) convertView.findViewById(R.id.listImage);
         TextView textViewName = (TextView) convertView.findViewById(R.id.listText);
         TextView subtextViewName = (TextView) convertView.findViewById(R.id.listSubText);
+        RelativeLayout linearLayout = (RelativeLayout) convertView.findViewById(R.id.mainItemBackground);
 
         MainItem folder = data.get(position);
 
@@ -55,7 +58,7 @@ public class DefaultMainAdapter extends ArrayAdapter<MainItem> {
         subtextViewName.setText(folder.subText);
 
         if(dataSelected[position])
-            convertView.setBackgroundColor(Color.LTGRAY);
+            linearLayout.setBackgroundColor(convertView.getResources().getColor(R.color.EnergyGrey));
 
         return convertView;
     }
