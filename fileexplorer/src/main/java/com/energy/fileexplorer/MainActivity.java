@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
         //ExternalStorage externalStorage = new ExternalStorage();
         //registerSDCardStateChangeListener();
         ExternalStorage externalStorage = new ExternalStorage(this);
-
+        File[] aux;
       //Guardar el estado anterior
         try {
 
@@ -95,6 +95,11 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             mainViews.add(Environment.getExternalStorageDirectory());
             listaFragments.add(new DefaultFragment(0));
+            try{
+                //aux = getExternalFilesDirs("null");
+            } catch (Exception ed){
+                aux = null;
+            }
         }
 
         Explorer.context = this;
@@ -128,7 +133,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
-                R.drawable.file_explorer,
+                R.drawable.ic_splash,
                 R.string.drawer_open,
                 R.string.drawer_close
         ) {
@@ -152,8 +157,8 @@ public class MainActivity extends ActionBarActivity {
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setTitle("Energy Files");
         getActionBar().setIcon(null);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(false);
+        getActionBar().setCustomView(R.layout.actionbar_view);
+        getActionBar().setDisplayShowHomeEnabled(true);
 
     }
 

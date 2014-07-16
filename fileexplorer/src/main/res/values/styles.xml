@@ -12,8 +12,8 @@
     </style>
 
     <style name="LinearLayoutItem" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:background">#FFFFFF</item>
-        <item name="android:text">#000000</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:text">@color/black</item>
     </style>
 
     <style name="MainItemSelectec" parent="Theme.AppCompat.Light.DarkActionBar">

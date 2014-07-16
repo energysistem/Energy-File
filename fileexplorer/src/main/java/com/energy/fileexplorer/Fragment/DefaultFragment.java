@@ -50,7 +50,7 @@ public class DefaultFragment extends Fragment implements View.OnLongClickListene
         final ListView listview = (ListView) rootView.findViewById(R.id.listView);
         toolMenu = (LinearLayout) rootView.findViewById(R.id.menuLayout);
         mainItems = Explorer.showArchives(file);
-        showMenu();
+        //showMenu();
 
 
         adapter = new DefaultMainAdapter(getActivity(),R.id.listView, mainItems);

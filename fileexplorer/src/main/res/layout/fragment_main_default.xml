@@ -13,7 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
         android:gravity="center_vertical"
         android:visibility="gone"
         android:drawSelectorOnTop="false"
@@ -24,9 +23,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuCopy"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:gravity="center"
             android:clickable="true">
             <ImageView
                 android:layout_width="30dp"
@@ -44,9 +41,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuCut"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:gravity="center"
             android:clickable="true">
             <ImageView
                 android:layout_width="30dp"
@@ -64,10 +59,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuPaste"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:enabled="false"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:clickable="true">
             <ImageView
                 android:layout_width="30dp"
@@ -85,10 +78,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuDelete"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:enabled="false"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:clickable="true">
             <ImageView
                 android:layout_width="30dp"
@@ -106,9 +97,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuZip"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:gravity="center"
             android:clickable="true">
             <ImageView
                 android:layout_width="30dp"
@@ -126,9 +115,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:id="@+id/menuShare"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:gravity="center"
             android:clickable="true">
             android:clickable="true">
             <ImageView
