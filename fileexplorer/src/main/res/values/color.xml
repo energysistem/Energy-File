@@ -14,7 +14,9 @@
     <item name="darkorange" type="color">#FFFF8800</item>
     <item name="darkred" type="color">#FFCC0000</item>
     <item name="EnergyOrange" type="color">#FFFF8000</item>
-    <item name="EnergyGrey" type="color">#FFA4A4A4</item>
+    <item name="EnergyOrangePro" type="color">#ffff9a00</item>
+    <item name="EnergyGrey" type="color">#ffdfdfdf</item>
+    <item name="EnergyGreyBackground" type="color">#FFF1F1F1</item>
 
     <integer-array name="androidcolors">
         <item>@color/blue</item>

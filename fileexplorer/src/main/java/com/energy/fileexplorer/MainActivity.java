@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -81,7 +82,14 @@ public class MainActivity extends ActionBarActivity {
         //ExternalStorage externalStorage = new ExternalStorage();
         //registerSDCardStateChangeListener();
         ExternalStorage externalStorage = new ExternalStorage(this);
-        File[] aux;
+        String path = "";
+        try {
+
+            //File aux = Environment.getExternalStorageDirectory();
+            //path = aux.getCanonicalPath();
+
+        } catch (Exception e) {}
+
       //Guardar el estado anterior
         try {
 
@@ -95,13 +103,10 @@ public class MainActivity extends ActionBarActivity {
         } catch (Exception e) {
             mainViews.add(Environment.getExternalStorageDirectory());
             listaFragments.add(new DefaultFragment(0));
-            try{
-                //aux = getExternalFilesDirs("null");
-            } catch (Exception ed){
-                aux = null;
-            }
+
         }
 
+        int num = path.hashCode();
         Explorer.context = this;
 
         fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), listaFragments);
@@ -153,12 +158,21 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setTitle("Energy Files");
-        getActionBar().setIcon(null);
+        getActionBar().setDisplayShowHomeEnabled(false);
+        getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setCustomView(R.layout.actionbar_view);
-        getActionBar().setDisplayShowHomeEnabled(true);
+        getActionBar().setDisplayShowCustomEnabled(true);
+
+        LayoutInflater mInflater = LayoutInflater.from(this);
+
+        View mCustomView = mInflater.inflate(R.layout.actionbar_view, null);
+        LinearLayout actionLinearLayout = (LinearLayout) mCustomView.findViewById(R.id.action_bar_button);
+        actionLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.openDrawer(mDrawerList);
+            }
+        });
 
     }
 

@@ -8,7 +8,7 @@
     </style>
 
     <style name="Layout" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/EnergyGreyBackground</item>
     </style>
 
     <style name="LinearLayoutItem" parent="Theme.AppCompat.Light.DarkActionBar">
