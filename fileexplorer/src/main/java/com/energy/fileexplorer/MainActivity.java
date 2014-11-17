@@ -24,7 +24,9 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.energy.fileexplorer.BroadcastReceivers.ExStorageMonted;
 import com.energy.fileexplorer.File.Explorer;
 import com.energy.fileexplorer.File.ExternalStorage;
 import com.energy.fileexplorer.Fragment.DefaultFragment;
@@ -79,9 +81,9 @@ public class MainActivity extends ActionBarActivity {
         /** Slide Navegation */
         mainViews = new ArrayList<File>();
         listaFragments = new ArrayList<Fragment>();
-        //ExternalStorage externalStorage = new ExternalStorage();
-        //registerSDCardStateChangeListener();
-        ExternalStorage externalStorage = new ExternalStorage(this);
+
+        startWatchingExternalStorage();
+
         String path = "";
         try {
 
@@ -129,7 +131,6 @@ public class MainActivity extends ActionBarActivity {
 
         shortCutAdapter = new MenuAdapter(this, R.layout.listview_item_row, shortCutItems);
         mDrawerList.setAdapter(shortCutAdapter);
-        externalStorage.controlMediaShortCut();
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
@@ -174,6 +175,46 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+
+    }
+
+    BroadcastReceiver mExternalStorageReceiver;
+    boolean mExternalStorageAvailable = false;
+    boolean mExternalStorageWriteable = false;
+
+    void updateExternalStorageState() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            Toast.makeText(this, "SD Card mounted", Toast.LENGTH_LONG).show();
+            mExternalStorageAvailable = mExternalStorageWriteable = true;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            Toast.makeText(this, "SD Card mounted", Toast.LENGTH_LONG).show();
+            mExternalStorageAvailable = true;
+            mExternalStorageWriteable = false;
+        } else {
+            Toast.makeText(this, "SD Card mounted", Toast.LENGTH_LONG).show();
+            mExternalStorageAvailable = mExternalStorageWriteable = false;
+        }
+        //handleExternalStorageState(mExternalStorageAvailable, mExternalStorageWriteable);
+    }
+
+    void startWatchingExternalStorage() {
+        mExternalStorageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.i("test", "Storage: " + intent.getData());
+                updateExternalStorageState();
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+        filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+        registerReceiver(mExternalStorageReceiver, filter);
+        updateExternalStorageState();
+    }
+
+    void stopWatchingExternalStorage() {
+        unregisterReceiver(mExternalStorageReceiver);
     }
 
 

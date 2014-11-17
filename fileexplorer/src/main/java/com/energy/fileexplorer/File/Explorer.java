@@ -102,12 +102,12 @@ public class Explorer {
         lastCache = file;
         canPast = true;
 
-        Toast.makeText(context, context.getText(R.string.eCopy), Toast.LENGTH_SHORT).show();
+        sendToast(context.getText(R.string.eCopy));
 
     }
 
     public static  void sendBackMessage(){
-        Toast.makeText(context, context.getText(R.string.eBackFragment), Toast.LENGTH_SHORT).show();
+        sendToast(context.getText(R.string.eBackFragment));
     }
 
     public static void archiveCut(ArrayList<File> file){
@@ -115,7 +115,7 @@ public class Explorer {
         canPast = true;
         isCut = true;
 
-        Toast.makeText(context, context.getText(R.string.eCut), Toast.LENGTH_SHORT).show();
+        sendToast(context.getText(R.string.eCut));
 
     }
 
@@ -128,7 +128,7 @@ public class Explorer {
 
         isCut = false;
         MainActivity.reloadFragmentMain();
-        Toast.makeText(context, context.getText(R.string.eDelete), Toast.LENGTH_SHORT).show();
+        sendToast(context.getText(R.string.eDelete));
     }
 
     public static void archiveDelete(File file){
@@ -153,7 +153,9 @@ public class Explorer {
     }
 
     public static void archivePaste(File file){
-        canPast = false;
+        if(!canPast)
+            return;
+
         File newFile;
         int numfiles = lastCache.size() -1;
         for(int i = numfiles;i>=0;i--) {
@@ -175,11 +177,13 @@ public class Explorer {
             }
         }
 
-        if(isCut)
+        if(isCut) {
             archiveDelete(lastCache);
+            isCut = false;
+        }
 
         MainActivity.reloadFragmentMain();
-        Toast.makeText(context, context.getText(R.string.ePaste), Toast.LENGTH_SHORT).show();
+        sendToast(context.getText(R.string.ePaste));
 
     }
 
@@ -215,7 +219,6 @@ public class Explorer {
         }
 
         return true;
-
     }
 
     private static boolean copyArchives(File newLocation, File file){
@@ -254,10 +257,18 @@ public class Explorer {
 
     public static void createFolder(File file, String name){
         File newDir = new File(file.getAbsolutePath() + "/" + name);
+        if(newDir.exists() && newDir.isDirectory()){
+            //TODO: Crear Mensaje de error;
+            return;
+        }
         newDir.mkdir();
 
         MainActivity.reloadFragmentMain();
-        Toast.makeText(context, context.getText(R.string.eNewFolder), Toast.LENGTH_SHORT).show();
+        sendToast(context.getText(R.string.eNewFolder));
+    }
+
+    public static void sendToast(CharSequence message){
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
 }

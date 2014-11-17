@@ -9,7 +9,7 @@
     tools:context="com.energy.fileexplorer.MainActivity$PlaceholderFragment">
 
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
@@ -36,7 +36,7 @@
             android:src="@drawable/ic_delete"
             android:layout_marginRight="10dp" />
 
-    </LinearLayout>
+    </LinearLayout> -->
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mainGrid"
